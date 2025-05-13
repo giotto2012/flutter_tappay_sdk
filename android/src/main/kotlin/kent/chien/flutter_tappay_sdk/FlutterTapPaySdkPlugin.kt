@@ -20,7 +20,7 @@ class FlutterTapPaySdkPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var channel: MethodChannel
 
   private lateinit var context: Context
-  private lateinit var activity: Activity
+  private var activity: Activity? = null
   private lateinit var googlePayHandler: GooglePayHandler
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -32,22 +32,26 @@ class FlutterTapPaySdkPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
-    googlePayHandler.setActivity(activity)
+    activity?.let {
+      googlePayHandler.setActivity(it)
+    }
     binding.addActivityResultListener(googlePayHandler)
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    activity = null!!
+    activity = null
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
     activity = binding.activity
-    googlePayHandler.setActivity(activity)
+    activity?.let {
+      googlePayHandler.setActivity(it)
+    }
     binding.addActivityResultListener(googlePayHandler)
   }
 
   override fun onDetachedFromActivity() {
-    activity = null!!
+    activity = null
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
